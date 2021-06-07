@@ -18,6 +18,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{  asset('assets/toastr/toastr.css') }}" rel="stylesheet">
+    <link href="{{  asset('assets/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -84,5 +86,26 @@
             @yield('content')
         </main>
     </div>
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}"></script>
+
+    <script src="{{ asset('js/app.js') }}"></script>
+    
+    <script src="{{ asset('assets/toastr/toastr.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('assets/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            toastr.options = {
+                positionClass: "toast-bottom-right"
+            };
+        });
+    </script>
+    @stack('js')
 </body>
 </html>

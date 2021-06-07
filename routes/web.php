@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminJobController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +21,11 @@ use App\Http\Controllers\Admin\AdminController;
 // });
 
 Auth::routes();
-Route::get('/', [App\Http\Controllers\UserJobController::class, 'index']);
+Route::get('/', [DashboardController::class, 'index']);
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::prefix('admin')->name('admin.')->middleware('is_admin')->group(function(){
     Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::resource('jobs', AdminJobController::class);
 });

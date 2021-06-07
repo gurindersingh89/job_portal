@@ -14,8 +14,7 @@ class AdminController extends Controller
     }
     
     public function dashboard(){
-        // $jobs = Job::paginate(10);
-        $jobs = array();
+        $jobs = Job::paginate(10);
         return view('admin.dashboard', compact('jobs'));
     }
 }

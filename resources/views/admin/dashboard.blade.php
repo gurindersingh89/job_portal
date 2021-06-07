@@ -8,28 +8,37 @@
                 <div class="card-header">
                     <button type="button" class="btn btn-primary" style="float:right;" id="add_button">ADD JOB</button>
                 </div>
-                <table class="table table-bordered mb-5">
-                    <thead>
-                        <tr class="table-success">
-                            <th scope="col">Id</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($jobs as $data)
-                        <tr row_id="{{$data->id}}">
-                            <th scope="row">{{ $data->id }}</th>
-                            <td>{{ $data->user->name }}</td>
-                            <td>{{ $data->name }}</td>
-                            <td><button type="button" class="btn btn-primary edit"  row_id="{{$data->id}}">Edit</button>
-                                <button type="button" class="btn btn-danger delete" row_id="{{$data->id}}">Delete</button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="card-body">
+                    <table class="table table-bordered mb-5">
+                        <thead>
+                            <tr class="table-success">
+                                <th scope="col">Id</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Job Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($jobs as $data)
+                            <tr row_id="{{$data->id}}">
+                                <th scope="row">{{ $data->id }}</th>
+                                <td>{{ $data->title }}</td>
+                                <td>{{ $data->description }}</td>
+                                <td>{{ $data->job_status }}</td>
+                                <td><button type="button" class="btn btn-primary edit" row_id="{{$data->id}}">Edit</button>
+                                    <button type="button" class="btn btn-danger delete" row_id="{{$data->id}}">Delete</button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+            <div class="pagination">
+                {{$jobs->links('pagination::bootstrap-4')}}
             </div>
         </div>
     </div>
@@ -46,15 +55,52 @@
             </div>
             <div class="modal-body">
                 <div class="px-3">
-                    <form class="form">
+                    <form id="job_form">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group p-lr-30">
-                                    <label for="name">Name</label>
-                                    <input type="text" id="name" class="form-control" name="name" />
+                                    <label for="title">Title</label>
+                                    <input type="text" id="title" class="form-control" name="title" autocomplete="off" />
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group p-lr-30">
+                                    <label for="description">Description</label>
+                                    <input type="text" id="description" class="form-control" name="description" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group p-lr-30">
+                                    <label for="description">Qualification</label>
+                                    <input type="text" id="qualification" class="form-control" name="qualification" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group p-lr-30">
+                                    <label for="description">No Of Openings</label>
+                                    <input type="text" id="no_of_openings" class="form-control" name="no_of_openings" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group p-lr-30">
+                                    <label for="description">Salary</label>
+                                    <input type="text" id="salary" class="form-control" name="salary" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group p-lr-30">
+                                    <label for="description">Department</label>
+                                    <input type="text" id="department" class="form-control" name="department" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="created_by" class="form-control" name="created_by" value="{{auth()->user()->name}}" autocomplete="off" />
 
                         <div class="form-actions">
                         </div>
@@ -71,7 +117,7 @@
 @push('js')
 <script>
     $(document).ready(function() {
-        
+
         $('#add_button').on('click', function() {
             $('#modal_title').text('Add Job');
             $('#my-modal').modal('show');
@@ -83,21 +129,21 @@
             var url = 'jobs';
             var type = 'POST';
 
-            if($(this).attr('edit') == 'true'){
+            if ($(this).attr('edit') == 'true') {
                 url += '/' + $(this).attr('row_id');
                 type = 'PUT'
             }
             $.ajax({
                 url: url,
                 type: type,
-                data: {name},
+                data: $('#job_form').serialize(),
                 complete: function() {},
                 success: function(res) {
                     $('#my-modal').modal('hide');
-                    toastr.success(res.message);
+                    toastr.success(res);
                     location.reload();
                 },
-                error:function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     var error = jqXHR.responseJSON.errors;
                     $.each(error, function(k, v) {
                         toastr.error(v[0]);
@@ -106,55 +152,57 @@
             });
         });
 
-        $('.edit').click(function(){
+        $('.edit').click(function() {
             var id = $(this).attr('row_id');
-            var url = 'jobs/'+id;
+            var url = 'jobs/' + id;
             $.ajax({
                 url: url,
                 type: 'GET',
                 complete: function() {},
                 success: function(res) {
-                    if(res.type == 'success'){
+                    if (res.type == 'success') {
                         post = res.data;
                         $('#modal_title').text('Edit Job');
                         $('#my-modal').modal('show');
                         $('#name').val(post.name);
-                        $('#save').attr({'edit': true, row_id: id});
+                        $('#save').attr({
+                            'edit': true,
+                            row_id: id
+                        });
                     }
                 }
             });
         });
-        $('.delete').click(function(){
+        $('.delete').click(function() {
             var id = $(this).attr('row_id');
-            var url = 'jobs/'+id;
+            var url = 'jobs/' + id;
             swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            })
-            .then((willDelete) => {
-                if (willDelete.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        complete: function() {},
-                        success: function(res) {
-                            $('tr[row_id="'+id+'"]').remove();
-                            toastr.success('Job Deleted Successfully');
-                            // location.reload();
-                        }
-                    });
-                } else {
-                    swal.fire("Your record is safe!");
-                }
-            });
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                })
+                .then((willDelete) => {
+                    if (willDelete.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            complete: function() {},
+                            success: function(res) {
+                                $('tr[row_id="' + id + '"]').remove();
+                                toastr.success('Job Deleted Successfully');
+                                // location.reload();
+                            }
+                        });
+                    } else {
+                        swal.fire("Your record is safe!");
+                    }
+                });
         });
     });
-
 </script>
 @endpush
 @endsection
