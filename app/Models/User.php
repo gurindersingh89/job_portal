@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'type'
     ];
 
     /**
@@ -40,4 +41,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public $appends = ['is_admin'];
+
+    public function getIsAdminAttribute(){
+        return $this->type == 'Admin' ? true : false;
+    }
 }
