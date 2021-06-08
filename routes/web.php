@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminJobController;
+use App\Http\Controllers\Admin\AdminUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,4 +30,5 @@ Route::prefix('admin')->name('admin.')->middleware('is_admin')->group(function()
     Route::get('dashboard', [AdminDashboardController::class, 'dashboard'])->name('dashboard');
     Route::resource('jobs', AdminJobController::class);
     Route::post('jobs/status/update', [AdminJobController::class, 'jobStatusUpdate']);
+    Route::resource('users', AdminUserController::class);
 });

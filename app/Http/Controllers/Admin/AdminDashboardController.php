@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Job;
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 
 class AdminDashboardController extends Controller
@@ -14,7 +14,9 @@ class AdminDashboardController extends Controller
     }
     
     public function dashboard(){
-        $jobs = Job::latest()->paginate(10);
-        return view('admin.dashboard', compact('jobs'));
+        $open_jobs = Job::openJobs()->count();
+        $close_jobs = Job::closeJobs()->count();
+        $users = User::userType()->count();
+        return view('admin.dashboard', compact('open_jobs', 'close_jobs', 'users'));
     }
 }

@@ -17,4 +17,8 @@ class Job extends Model
     public function scopeOpenJobs($query){
         return $query->where('job_status', 'Open');
     }
+
+    public function scopeCloseJobs($query){
+        return $query->where('job_status', 'Close');
+    }
 }

@@ -8,6 +8,11 @@ use App\Http\Controllers\Controller;
 
 class AdminJobController extends Controller
 {
+    public function index(){
+        $jobs = Job::latest()->paginate(10);
+        return view('admin.jobs', compact('jobs'));
+    }
+
     public function store(Request $request){
         $validate_attributes = $this->validateJob($request);
         
