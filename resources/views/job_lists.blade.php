@@ -28,10 +28,14 @@
                                 <td>{{ $data->salary }}</td>
                                 <td>{{ $data->no_of_openings }}</td>
                                 <td>
-                                    @if($data->job_applies_count > 0)
-                                    <button type="button" class="btn btn-primary job_remove" row_id="{{$data->id}}">Remove</button>
+                                    @if(!auth()->user())
+                                        <a href="{{url('/login')}}" class="btn btn-primary">Apply</a>
                                     @else
-                                    <button type="button" class="btn btn-primary job_apply" row_id="{{$data->id}}">Apply</button>
+                                        @if($data->job_applies_count > 0)
+                                        <button type="button" class="btn btn-primary job_remove" row_id="{{$data->id}}">Remove</button>
+                                        @else
+                                        <button type="button" class="btn btn-primary job_apply" row_id="{{$data->id}}">Apply</button>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>

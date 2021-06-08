@@ -14,7 +14,7 @@ class AlterTableUsersAddMobileNumberColumn extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('mobile_number')->after('email');
+            $table->integer('mobile_number')->after('email')->default(0);
         });
     }
 

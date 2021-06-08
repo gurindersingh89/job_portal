@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     public function index(){
-        $jobs = Job::withCount(['jobApplies' => function ($query) {
-            $query->whereUserId(auth()->user()->id);
+        $user_id = auth()->user()->id ?? '';
+        $jobs = Job::withCount(['jobApplies' => function ($query) use($user_id){
+            if($user_id)
+                $query->whereUserId($user_id);
         }])
             ->openJobs()
             ->paginate(10);

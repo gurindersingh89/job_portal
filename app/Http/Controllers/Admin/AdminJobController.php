@@ -44,6 +44,7 @@ class AdminJobController extends Controller
             'no_of_openings' => ['required', 'integer'],
             'department' => ['required', 'max:100'],
             'salary' => ['required', 'integer'],
+            'created_by' => ['required'],
         ];
 
         return $this->validate($request, $rules);
