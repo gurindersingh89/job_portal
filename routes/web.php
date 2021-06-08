@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminJobController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +22,14 @@ use App\Http\Controllers\Admin\AdminUserController;
 //     return view('welcome');
 // });
 
-Auth::routes();
-Route::get('/', [DashboardController::class, 'index']);
+Auth::routes(['verify' => true]);
+Route::get('/', [DashboardController::class, 'index'])->middleware('verified_user');
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::middleware(['verified'])->group(function(){
+    Route::resource('profile', UserProfileController::class);
+});
 Route::prefix('admin')->name('admin.')->middleware('is_admin')->group(function(){
     Route::get('dashboard', [AdminDashboardController::class, 'dashboard'])->name('dashboard');
     Route::resource('jobs', AdminJobController::class);
