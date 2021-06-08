@@ -48,4 +48,18 @@ class AdminJobController extends Controller
         $job->delete();
         return response()->json('', 204);
     }
+
+    public function jobStatusUpdate(Request $request){
+        $rules = [
+            'id' => ['required', 'integer', 'exists:jobs'],
+            'value' => ['required', 'in:Open,Close'],
+        ];
+
+        $this->validate($request, $rules);
+
+        $job = Job::whereId($request->id)->update(['job_status' => $request->value]);
+
+        $data = ['status' => true, 'data' => $job, 'message' => 'Job Status Updated'];
+        return response()->json($data);
+    }
 }

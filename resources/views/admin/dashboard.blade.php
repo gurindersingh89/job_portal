@@ -33,7 +33,12 @@
                                 <td>{{ $data->department }}</td>
                                 <td>{{ $data->salary }}</td>
                                 <td>{{ $data->no_of_openings }}</td>
-                                <td>{{ $data->job_status }}</td>
+                                <td>
+                                    <select class="custom-select custom-select-sm update_job_status" row_id="{{$data->id}}">
+                                        <option value="Open">Open</option>
+                                        <option value="Close" {{ $data->job_status == 'Close' ? 'selected' : '' }}>Close</option>
+                                    </select>
+                                </td>
                                 <td><button type="button" class="btn btn-primary edit" row_id="{{$data->id}}">Edit</button>
                                     <button type="button" class="btn btn-danger delete" row_id="{{$data->id}}">Delete</button>
                                 </td>
@@ -215,6 +220,29 @@
                         swal.fire("Your record is safe!");
                     }
                 });
+        });
+
+        $('.update_job_status').change(function() {
+            var id = $(this).attr('row_id');
+            var url = 'jobs/status/update';
+            var value = $(this).val();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data : {id, value},
+                complete: function() {},
+                success: function(res) {
+                    if (res.status) {
+                        toastr.success(res.message);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    var error = jqXHR.responseJSON.errors;
+                    $.each(error, function(k, v) {
+                        toastr.error(v[0]);
+                    });
+                }
+            });
         });
     });
 </script>
