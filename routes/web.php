@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\UserJobApplyController;
 use App\Http\Controllers\Admin\AdminJobController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -29,7 +30,10 @@ Route::get('/', [DashboardController::class, 'index'])->middleware('verified_use
 
 Route::middleware(['verified'])->group(function(){
     Route::resource('profile', UserProfileController::class);
+    Route::post('job/apply', [UserJobApplyController::class, 'jobApply'])->name('job.apply');
+    Route::post('job/remove', [UserJobApplyController::class, 'jobRemove'])->name('job.remove');
 });
+
 Route::prefix('admin')->name('admin.')->middleware('is_admin')->group(function(){
     Route::get('dashboard', [AdminDashboardController::class, 'dashboard'])->name('dashboard');
     Route::resource('jobs', AdminJobController::class);

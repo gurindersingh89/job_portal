@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\UserProfile;
+use App\Models\UserJobApply;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -58,5 +59,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function userProfile(){
         return $this->hasOne(UserProfile::class);
+    }
+
+    public function jobUserApplies(){
+        return $this->hasMany(UserJobApply::class);
     }
 }

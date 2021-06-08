@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\UserJobApply;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Job extends Model
 {
@@ -20,5 +21,9 @@ class Job extends Model
 
     public function scopeCloseJobs($query){
         return $query->where('job_status', 'Close');
+    }
+
+    public function jobApplies(){
+        return $this->hasMany(UserJobApply::class);
     }
 }
