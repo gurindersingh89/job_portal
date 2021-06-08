@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Job extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     public $fillable = ['title', 'description', 'qualification', 'no_of_openings', 'department', 'salary', 'job_status', 'created_by'];
     
