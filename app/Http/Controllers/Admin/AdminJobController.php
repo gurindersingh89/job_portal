@@ -9,6 +9,29 @@ use App\Http\Controllers\Controller;
 class AdminJobController extends Controller
 {
     public function store(Request $request){
+        $validate_attributes = $this->validateJob($request);
+        
+        $job = Job::create($validate_attributes);
+
+        $data = ['status' => true, 'data' => $job, 'message' => 'Job Added Successfully'];
+        return response()->json($data);
+    }
+    
+    public function show(Job $job){
+        $data = ['status' => true, 'data' => $job];
+        return response()->json($data);
+    }
+
+    public function update(Request $request, Job $job){
+        $validate_attributes = $this->validateJob($request);
+        
+        $job = $job->update($validate_attributes);
+
+        $data = ['status' => true, 'data' => $job, 'message' => 'Job Updated Successfully'];
+        return response()->json($data);
+    }
+
+    public function validateJob($request){
         $rules = [
             'title' => ['required', 'max:50'],
             'description' => ['required'],
@@ -17,11 +40,12 @@ class AdminJobController extends Controller
             'department' => ['required', 'max:100'],
             'salary' => ['required', 'integer'],
         ];
-        
-        $validate_attributes = $this->validate($request, $rules);
-        
-        Job::create($validate_attributes);
 
-        return response()->json('Job Added Successfully');
+        return $this->validate($request, $rules);
+    }
+
+    public function destroy(Job $job){
+        $job->delete();
+        return response()->json('', 204);
     }
 }

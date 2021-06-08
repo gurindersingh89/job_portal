@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
                     <button type="button" class="btn btn-primary" style="float:right;" id="add_button">ADD JOB</button>
@@ -15,6 +15,10 @@
                                 <th scope="col">Id</th>
                                 <th scope="col">Title</th>
                                 <th scope="col">Description</th>
+                                <th scope="col">Qualification</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Salary</th>
+                                <th scope="col">No Of Openings</th>
                                 <th scope="col">Job Status</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -25,6 +29,10 @@
                                 <th scope="row">{{ $data->id }}</th>
                                 <td>{{ $data->title }}</td>
                                 <td>{{ $data->description }}</td>
+                                <td>{{ $data->qualification }}</td>
+                                <td>{{ $data->department }}</td>
+                                <td>{{ $data->salary }}</td>
+                                <td>{{ $data->no_of_openings }}</td>
                                 <td>{{ $data->job_status }}</td>
                                 <td><button type="button" class="btn btn-primary edit" row_id="{{$data->id}}">Edit</button>
                                     <button type="button" class="btn btn-danger delete" row_id="{{$data->id}}">Delete</button>
@@ -119,6 +127,7 @@
     $(document).ready(function() {
 
         $('#add_button').on('click', function() {
+            $('#job_form').trigger('reset');
             $('#modal_title').text('Add Job');
             $('#my-modal').modal('show');
             $('#save').attr('edit', false);
@@ -131,7 +140,7 @@
 
             if ($(this).attr('edit') == 'true') {
                 url += '/' + $(this).attr('row_id');
-                type = 'PUT'
+                type = 'PATCH'
             }
             $.ajax({
                 url: url,
@@ -140,7 +149,7 @@
                 complete: function() {},
                 success: function(res) {
                     $('#my-modal').modal('hide');
-                    toastr.success(res);
+                    toastr.success(res.message);
                     location.reload();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -160,11 +169,16 @@
                 type: 'GET',
                 complete: function() {},
                 success: function(res) {
-                    if (res.type == 'success') {
-                        post = res.data;
+                    if (res.status) {
+                        result = res.data;
                         $('#modal_title').text('Edit Job');
                         $('#my-modal').modal('show');
-                        $('#name').val(post.name);
+                        $('#title').val(result.title);
+                        $('#description').val(result.description);
+                        $('#qualification').val(result.qualification);
+                        $('#no_of_openings').val(result.no_of_openings);
+                        $('#department').val(result.department);
+                        $('#salary').val(result.salary);
                         $('#save').attr({
                             'edit': true,
                             row_id: id

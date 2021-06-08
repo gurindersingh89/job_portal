@@ -6,7 +6,7 @@ use App\Models\Job;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class AdminController extends Controller
+class AdminDashboardController extends Controller
 {
     public function __construct()
     {
@@ -14,7 +14,7 @@ class AdminController extends Controller
     }
     
     public function dashboard(){
-        $jobs = Job::paginate(10);
+        $jobs = Job::latest()->paginate(10);
         return view('admin.dashboard', compact('jobs'));
     }
 }
